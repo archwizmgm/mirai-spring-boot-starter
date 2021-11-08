@@ -1,4 +1,4 @@
-package com.kuroko.events;
+package com.kuroko.event;
 
 import net.mamoe.mirai.event.events.*;
 

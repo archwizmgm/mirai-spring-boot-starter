@@ -1,4 +1,4 @@
-package com.kuroko.exceptions;
+package com.kuroko.exception;
 
 public class NonsupportProtocolException extends RuntimeException {
 

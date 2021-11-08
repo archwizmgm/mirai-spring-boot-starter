@@ -1,4 +1,4 @@
-package com.kuroko.properties;
+package com.kuroko.propertie;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -7,7 +7,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class MiraiProperties {
 
-    private String protocol;
+    private String protocol = "ANDROID_PHONE";
     private Long account;
     private String password;
     private boolean disableContactCache;

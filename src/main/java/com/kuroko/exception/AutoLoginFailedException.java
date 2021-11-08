@@ -1,4 +1,4 @@
-package com.kuroko.exceptions;
+package com.kuroko.exception;
 
 import net.mamoe.mirai.network.CustomLoginFailedException;
 

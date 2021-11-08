@@ -1,6 +1,6 @@
 package com.kuroko.solver;
 
-import com.kuroko.exceptions.AutoLoginFailedException;
+import com.kuroko.exception.AutoLoginFailedException;
 import kotlin.coroutines.Continuation;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.utils.LoginSolver;
