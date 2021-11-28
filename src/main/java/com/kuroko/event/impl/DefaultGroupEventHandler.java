@@ -23,11 +23,6 @@ public class DefaultGroupEventHandler implements GroupEventHandler {
     }
 
     @Override
-    public void afterSendTempMessage(GroupTempMessagePostSendEvent event) {
-
-    }
-
-    @Override
     public void beforeSendMessage(Group target, Message message) {
 
     }

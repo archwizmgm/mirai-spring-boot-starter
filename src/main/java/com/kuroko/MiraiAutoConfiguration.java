@@ -12,6 +12,7 @@ import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.EventChannel;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.utils.BotConfiguration;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -39,7 +40,7 @@ public class MiraiAutoConfiguration {
 
         BotConfiguration botConfiguration = new BotConfiguration();
         botConfiguration.setProtocol(supportedProtocol(properties.getProtocol()));
-        botConfiguration.fileBasedDeviceInfo();
+        botConfiguration.loadDeviceInfoJson(properties.getDevice());
         botConfiguration.setLoginSolver(new VoidLoginSolver());
         if (properties.isDisableContactCache()) {
             botConfiguration.disableContactCache();
@@ -48,11 +49,11 @@ public class MiraiAutoConfiguration {
         Bot bot = BotFactory.INSTANCE.newBot(properties.getAccount(), properties.getPassword(), botConfiguration);
 
         // 别删了try/catch删了会挂,我也不知道为什么 :)
-//        try {
-//            bot.login();
-//        } catch (Exception e) {  // net.mamoe.mirai.network.WrongPasswordException
-//            throw new BeanCreationException("自动登录失败!");
-//        }
+        try {
+            bot.login();
+        } catch (Exception e) {  // net.mamoe.mirai.network.WrongPasswordException
+            throw new BeanCreationException("自动登录失败!");
+        }
 
         EventChannel<BotEvent> eventChannel = bot.getEventChannel();
 
