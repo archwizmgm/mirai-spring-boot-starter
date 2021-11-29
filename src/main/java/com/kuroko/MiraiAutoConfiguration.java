@@ -34,9 +34,7 @@ public class MiraiAutoConfiguration {
     //todo 好像所有事件都可以取消
     @Bean("bot")
     @ConditionalOnMissingBean
-    Bot bot(MiraiProperties properties, FriendEventHandler friend, GroupEventHandler group, StrangerEventHandler stranger, OtherClientEventHandler client,
-            ImageUploadEventHandler image
-    ) {
+    Bot bot(MiraiProperties properties) {
 
         BotConfiguration botConfiguration = new BotConfiguration();
         botConfiguration.setProtocol(supportedProtocol(properties.getProtocol()));
@@ -55,9 +53,23 @@ public class MiraiAutoConfiguration {
             throw new BeanCreationException("自动登录失败!");
         }
 
-        EventChannel<BotEvent> eventChannel = bot.getEventChannel();
+        return bot;
+    }
 
-        // 日志
+    @Bean("miraiTemplate")
+    @DependsOn("bot")
+    @ConditionalOnMissingBean
+    MiraiTemplate miraiTemplate(Bot bot) {
+        return new MiraiTemplate(bot);
+    }
+
+    @Bean
+    @DependsOn("miraiTemplate")
+    PostProcessor postProcessor(
+            Bot bot, FriendEventHandler friend, GroupEventHandler group, StrangerEventHandler stranger, OtherClientEventHandler client, ImageUploadEventHandler image) {
+
+        EventChannel<BotEvent> eventChannel = bot.getEventChannel();
+        // ******* 日志
         // 好友相关事件
         eventChannel.subscribeAlways(FriendMessageEvent.class, ev -> log.info("[R] {}({}): {}", ev.getSender().getNick(), ev.getSender().getId(), ev.getMessage().contentToString()));
         eventChannel.subscribeAlways(FriendMessagePreSendEvent.class, ev -> log.info("[S] {}({}): {}", ev.getTarget().getNick(), ev.getTarget().getId(), ev.getMessage().contentToString()));
@@ -79,7 +91,7 @@ public class MiraiAutoConfiguration {
         // 其他客户端
         eventChannel.subscribeAlways(OtherClientMessageEvent.class, ev -> log.info("[R] {}({}): {}", ev.getClient().getInfo().getDeviceName(), ev.getClient().getInfo().getDeviceKind(), ev.getMessage().contentToString()));
 
-        // 事件处理器
+        // ******* 事件处理器
         if (!(friend instanceof DefaultFriendEventHandler)) {
             // 好友相关事件
             eventChannel.subscribeAlways(FriendMessageEvent.class, ev -> friend.onMessage(ev.getSender(), ev.getMessage()));
@@ -121,14 +133,7 @@ public class MiraiAutoConfiguration {
             eventChannel.subscribeAlways(ImageUploadEvent.class, ev -> image.afterUpload(ev.getTarget(), ev.getSource()));
         }
 
-        return bot;
-    }
-
-    @Bean
-    @DependsOn("bot")
-    @ConditionalOnMissingBean
-    MiraiTemplate miraiTemplate(Bot bot) {
-        return new MiraiTemplate(bot);
+        return new PostProcessor();
     }
 
     private BotConfiguration.MiraiProtocol supportedProtocol(String str) {
