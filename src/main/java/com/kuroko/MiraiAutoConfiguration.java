@@ -3,36 +3,57 @@ package com.kuroko;
 import com.kuroko.event.*;
 import com.kuroko.event.impl.*;
 import com.kuroko.exception.NonsupportProtocolException;
+import com.kuroko.propertie.HttpClientProperties;
 import com.kuroko.propertie.MiraiProperties;
 import com.kuroko.solver.VoidLoginSolver;
 import com.kuroko.templates.MiraiTemplate;
+import kotlin.Unit;
 import lombok.extern.slf4j.Slf4j;
 import net.mamoe.mirai.Bot;
 import net.mamoe.mirai.BotFactory;
 import net.mamoe.mirai.event.EventChannel;
+import net.mamoe.mirai.event.GlobalEventChannel;
 import net.mamoe.mirai.event.events.*;
 import net.mamoe.mirai.utils.BotConfiguration;
 import org.springframework.beans.factory.BeanCreationException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
 
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
+import java.net.http.HttpClient;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.Optional;
 
 @Slf4j
 @Configuration
 @Import(EventHandlerConfiguration.class)
-@EnableConfigurationProperties(MiraiProperties.class)
+@EnableConfigurationProperties({MiraiProperties.class, HttpClientProperties.class})
 public class MiraiAutoConfiguration {
+
+    @Bean("mirai-httpclient")
+    @ConditionalOnMissingBean
+    public HttpClient httpClient(HttpClientProperties properties) {
+
+        HttpClient.Builder builder = HttpClient.newBuilder();
+        builder.connectTimeout(Duration.ofSeconds(properties.getTimeout()));
+
+        if (properties.getHost() != null & properties.getPort() != null && properties.getTimeout() != null) {
+            InetSocketAddress unresolved = InetSocketAddress.createUnresolved(properties.getHost(), properties.getPort());
+            ProxySelector selector = ProxySelector.of(unresolved);
+            builder.proxy(selector);
+        }
+        return builder.build();
+    }
 
     //todo 好像所有事件都可以取消
     @Bean("bot")
+    @DependsOn("mirai-httpclient")
     @ConditionalOnMissingBean
     Bot bot(MiraiProperties properties) {
 
@@ -45,7 +66,6 @@ public class MiraiAutoConfiguration {
         }
 
         Bot bot = BotFactory.INSTANCE.newBot(properties.getAccount(), properties.getPassword(), botConfiguration);
-
         // 别删了try/catch删了会挂,我也不知道为什么 :)
         try {
             bot.login();
@@ -56,19 +76,25 @@ public class MiraiAutoConfiguration {
         return bot;
     }
 
+
     @Bean("miraiTemplate")
     @DependsOn("bot")
     @ConditionalOnMissingBean
-    MiraiTemplate miraiTemplate(Bot bot) {
-        return new MiraiTemplate(bot);
+    MiraiTemplate miraiTemplate(Bot bot, HttpClient client) {
+        return new MiraiTemplate(bot, client);
     }
 
     @Bean
     @DependsOn("miraiTemplate")
     PostProcessor postProcessor(
             Bot bot, FriendEventHandler friend, GroupEventHandler group, StrangerEventHandler stranger, OtherClientEventHandler client, ImageUploadEventHandler image) {
-
         EventChannel<BotEvent> eventChannel = bot.getEventChannel();
+
+        GlobalEventChannel.INSTANCE.exceptionHandler(throwable -> {
+            System.out.println("发生异常啦!");
+            return Unit.INSTANCE;
+        });
+
         // ******* 日志
         // 好友相关事件
         eventChannel.subscribeAlways(FriendMessageEvent.class, ev -> log.info("[R] {}({}): {}", ev.getSender().getNick(), ev.getSender().getId(), ev.getMessage().contentToString()));
