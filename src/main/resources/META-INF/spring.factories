@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.kuroko.MiraiAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.hkuroko.mirai.MiraiAutoConfiguration

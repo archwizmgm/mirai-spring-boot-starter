@@ -1,0 +1,117 @@
+{
+  "groups": [
+    {
+      "name": "mirai",
+      "type": "com.hkuroko.mirai.MiraiProperties",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "mirai.protocol",
+      "type": "java.lang.String",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "协议类型",
+      "defaultValue": "ANDROID_PHONE"
+    },
+    {
+      "name": "mirai.qq",
+      "type": "java.lang.Long",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "QQ号"
+    },
+    {
+      "name": "mirai.pwd",
+      "type": "java.lang.String",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "QQ密码"
+    },
+    {
+      "name": "mirai.device-json",
+      "type": "java.lang.String",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "设备信息Json"
+    },
+    {
+      "name": "mirai.disable-contact-cache",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "defaultValue": false,
+      "description": "禁用好友列表和群成员列表的缓存"
+    },
+    {
+      "name": "mirai.file-cache-strategy",
+      "type": "java.lang.String",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "资源缓存策略",
+      "defaultValue": "TEMP"
+    },
+    {
+      "name": "mirai.cache-dir",
+      "type": "java.lang.String",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "数据缓存目录(联系人列表,登录服务器列表,资源服务秘钥)",
+      "defaultValue": "cache"
+    },
+    {
+      "name": "mirai.auto-reconnect-on-force-offline",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "被挤下线时是否重连(其他情况掉线会自动重连)",
+      "defaultValue": false
+    },
+    {
+      "name": "mirai.reconnection-retry-times",
+      "type": "java.lang.Integer",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "重连尝试次数",
+      "defaultValue": 5
+    },
+    {
+      "name": "mirai.highway-upload-coroutine-count",
+      "type": "java.lang.Integer",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "Highway通道上传资源时的协程数量,每个协程约: 200KB/s. max(cpu核心,设置)",
+      "defaultValue": 2
+    },
+    {
+      "name": "mirai.auto-login",
+      "type": "java.lang.Boolean",
+      "sourceType": "com.hkuroko.mirai.MiraiProperties",
+      "description": "自动登录",
+      "defaultValue": true
+    }
+  ],
+  "hints": [
+    {
+      "name": "mirai.protocol",
+      "values": [
+        {
+          "value": "ANDROID_PHONE",
+          "description": "Android 手机,所有功能都支持"
+        },
+        {
+          "value": "ANDROID_PAD",
+          "description": "Android 平板,不支持戳一戳事件解析"
+        },
+        {
+          "value": "ANDROID_WATCH",
+          "description": "Android 手表"
+        }
+      ]
+    },
+    {
+      "name": "mirai.file-cache-strategy",
+      "values": [
+        {
+          "value": "TEMP",
+          "description": "使用系统临时文件夹缓存图片文件,使用后或 JVM 正常结束时删除临时文件"
+        },
+        {
+          "value": "MEMORY",
+          "description": "使用内存直接存储所有图片文件. 由 JVM 执行 GC"
+        }
+      ]
+    }
+  ]
+}
