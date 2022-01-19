@@ -1,7 +1,10 @@
 # mirai-spring-boot-starter
 
 ```java
-
+/**
+ * 本项目旨在为 mirai 做一些自动装配，没有封装任何东西
+ * 编码时将会接触到很多 mirai core 原生 api，请务必阅读 mirai 官方的文档
+ */
 @Component
 public class MyHandler implements EventHandler<FriendMessageEvent> {
 
@@ -79,5 +82,15 @@ mirai.device-json=/* Mirai 登录后生成的 device.json (json可以压缩后�
 
 #### 获取 device.json
 
-- 推荐直接使用 Mirai Android 登录账号后导出 device.json. [下载](https://install.appcenter.ms/users/mzdluo123/apps/miraiandroid/distribution_groups/release)
+- 推荐直接使用 Mirai Android 登录账号后导出
+  device.json. [下载](https://install.appcenter.ms/users/mzdluo123/apps/miraiandroid/distribution_groups/release)
+
 - 其他方式请参考社区的说明: [无法登录的临时处理方案](https://mirai.mamoe.net/topic/223/%E6%97%A0%E6%B3%95%E7%99%BB%E5%BD%95%E7%9A%84%E4%B8%B4%E6%97%B6%E5%A4%84%E7%90%86%E6%96%B9%E6%A1%88)
+
+### 声明
+
+本项目依赖于mirai，继承并使用mirai相关声明，使用本项目前请阅读相关声明
+
+- [Mirai声明](https://github.com/mamoe/mirai#%E5%A3%B0%E6%98%8E)
+- [Mirai许可证](https://github.com/mamoe/mirai#%E8%AE%B8%E5%8F%AF%E8%AF%81)
+- [协议支持](https://github.com/mamoe/mirai#%E5%8D%8F%E8%AE%AE%E6%94%AF%E6%8C%81)
